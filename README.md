@@ -23,7 +23,7 @@ L'application utilise un modèle **XGBoost** entraîné sur des données RH. Ell
 
 ### 1. Cloner le projet
 ```bash
-git clone [https://github.com/VOTRE_PSEUDO/projet_5_deploy_ml.git](https://github.com/VOTRE_PSEUDO/projet_5_deploy_ml.git)
+git clone https://github.com/FatiQpi/Projet_5_Deploy_ML.git
 cd projet_5_deploy_ml
 ```
 ### 2. Crée l'environnement virtuel
