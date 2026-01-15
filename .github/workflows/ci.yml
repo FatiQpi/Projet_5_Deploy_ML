@@ -1,0 +1,32 @@
+name: CI Pipeline
+
+# Quand le robot doit s'activer?
+on:
+  push:
+    branches: ["main"] # Sur les pushs vers la branche main
+
+# Jobs à exécuter
+jobs:
+  testinfrastructure:
+    runs-on: ubuntu-latest # Utiliser la dernière version d'Ubuntu (ordi Linux virtuel)
+
+    steps:
+      # 1. Il Récupérer le code du dépôt
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      # 2. Il installe python
+      - name: Installation de Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      # 3. Il installe les outils nécessaires
+      - name: Installation des outils 
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest httpx
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
+        # Note: on vérifie si requirements.txt existe avant de l'installer sinon continue sans erreur
+
+      # 4. Il lance les tests
+      - name: Lancement des tests
+        run: pytest
