@@ -3,7 +3,9 @@ name: CI Pipeline
 # Quand le robot doit s'activer?
 on:
   push:
-    branches: ["main"] # Sur les pushs vers la branche main
+    branches: ["feature/*"] # Sur les pushs vers la branches
+  pull_request:
+      branches: ["main"] # Sur les PR vers la branche main
 
 # Jobs à exécuter
 jobs:
@@ -18,7 +20,7 @@ jobs:
       - name: Installation de Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11'
       # 3. Il installe les outils nécessaires
       - name: Installation des outils 
         run: |
