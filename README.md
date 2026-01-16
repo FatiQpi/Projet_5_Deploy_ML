@@ -15,11 +15,18 @@ L'application utilise un modèle **XGBoost** entraîné sur des données RH. Ell
 - **Data :** Pandas
 - **Gestion de version :** Git & GitHub
 
+## Structure du projet
+- `app/` : Code source de l'API (FastAPI).
+- `data/` : Modèles entraînés (.joblib).
+- `tests/` : Tests unitaires.
+- `.github/` : Pipelines CI/CD.
+
 ## Installation et Démarrage
 
 ### Prérequis
-- Python 3.9+
+- Python 3.11+
 - Pip
+- Git
 
 ### 1. Cloner le projet
 ```bash
