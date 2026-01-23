@@ -1,9 +1,9 @@
 name: CD - Deploy to HuggingFace
 
-
+# S'active UNIQUEMENT quand on fusionne sur main
 on:
   push:
-    branches: [ "main", "test/fix-deploy" ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -15,24 +15,20 @@ jobs:
           fetch-depth: 0
           lfs: true
       
-      - name: Push to HF Hub
+      - name: Push to Hugging Face Hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: "Fatih09"
-          SPACE_NAME: "Technova_api"
+          SPACE_NAME: "technova-api" # Ton nouveau Space
         run: |
-
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          
+          echo "🚀 Démarrage du déploiement..."
+          rm -rf .git
+          git init -b main
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
           git lfs install
           git lfs track "data/*.joblib"
-          git add .gitattributes
-
-          git add --renormalize .
-          git commit -m "Fix: Conversion LFS forcée" || true
-
-          git remote remove hf 2>/dev/null || true
+          git add .
+          git commit -m "Deploy: Release via GitHub Actions"
           git remote add hf https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$SPACE_NAME
-          
-          git push --force hf HEAD:main
+          git push --force hf main
