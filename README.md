@@ -1,3 +1,13 @@
+---
+title: Technova API
+emoji: 🚀
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+license: mit
+---
+
 # API de Prédiction d'Attrition RH 
 
 Ce projet expose une API de Machine Learning capable de prédire si un employé est susceptible de quitter l'entreprise. Il s'inscrit dans le cadre du Projet 5 de ma formation AI Engineer.
