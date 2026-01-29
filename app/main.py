@@ -10,14 +10,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Chargement du modèle (Chemin validé ensemble)
+# Chargement du modèle
 try:
     model = joblib.load("data/new_model_attrition.joblib")
 except Exception as e:
     print(f"ERREUR : Impossible de charger le modèle. {e}")
     model = None
 
-# Modèle de Données (Variables validées ensemble)
+# Modèle de Données 
 class EmployeeData(BaseModel):
     # --- Variables Numériques ---
     age: int = Field(..., example=41, description="Age de l'employé")
@@ -74,13 +74,12 @@ def predict(employee: EmployeeData):
         probas = model.predict_proba(df)
         
         result = "Départ" if prediction[0] == 1 else "Reste"
-        score = probas[0][1] # Probabilité de la classe 1 (Départ)
+        score = probas[0][1] # Probabilité de départ
 
         return {
             "prediction": result,
             "probability_depart": round(float(score), 4),
-            # C'est la SEULE ligne modifiée : ajout de bool() pour éviter le crash JSON
-            "alert": bool(score > 0.5) 
+            "alert": bool(score > 0.5) # Alerte si probabilité > 50%
         }
 
     except Exception as e:
