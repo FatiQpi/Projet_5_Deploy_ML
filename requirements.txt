@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+fastapi
+uvicorn
+pandas
+scikit-learn
+xgboost
+joblib
+pydantic
+python-multipart
+=======
+>>>>>>> feature/api-dev
 # ---  ML (Basé sur le pyproject.toml) ---
 numpy>=1.26.0
 pandas==2.3.3
@@ -15,4 +28,9 @@ joblib>=1.3.2
 pydantic>=2.6.0
 httpx==0.26.0
 pytest==8.0.0
+<<<<<<< HEAD
 streamlit>=1.40.0
+=======
+streamlit>=1.40.0
+>>>>>>> Stashed changes
+>>>>>>> feature/api-dev
