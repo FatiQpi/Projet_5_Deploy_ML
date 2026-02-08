@@ -5,15 +5,12 @@ from sqlalchemy.orm import declarative_base
 from datetime import datetime, timezone 
 from dotenv import load_dotenv
 
-# Charger le fichier .env depuis la racine
+# Charger le fichier .env 
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError(" ERREUR : Variable DATABASE_URL introuvable!")
-
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 print("Connexion à Supabase en cours...")
 
@@ -32,7 +29,6 @@ class HistoricalData(Base):
 class PredictionLogs(Base):
     __tablename__ = "prediction_logs"
     id = Column(Integer, primary_key=True, index=True)
-    # CORRECTION ICI 👇
     timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     input_data = Column(JSON, nullable=False)
     prediction = Column(String, nullable=False)

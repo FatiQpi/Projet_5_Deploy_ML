@@ -10,16 +10,13 @@ from dotenv import load_dotenv
 load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine)
 session = SessionLocal()
 
 Base = declarative_base()
 
-# On redéfinit la classe pour que ce script soit indépendant
+# On redéfinit la classe pour que le script soit indépendant
 class HistoricalData(Base):
     __tablename__ = "historical_data"
     id = Column(Integer, primary_key=True, index=True)

@@ -1,59 +1,171 @@
 ---
-title: Technova API
+title: Technova API - Employee Attrition
 emoji: 🚀
 colorFrom: blue
 colorTo: indigo
 sdk: docker
 pinned: false
 license: mit
+app_port: 7860
 ---
 
-# API de Prédiction d'Attrition RH 
+# 🔮 API de Prédiction d'Attrition RH (Technova)
 
-Ce projet expose une API de Machine Learning capable de prédire si un employé est susceptible de quitter l'entreprise. Il s'inscrit dans le cadre du Projet 5 de ma formation AI Engineer.
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green.svg)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen.svg)](./tests)
 
 ## Description
 
-L'application utilise un modèle **XGBoost** entraîné sur des données RH. Elle permet via une API REST (FastAPI) d'envoyer les caractéristiques d'un employé et de recevoir :
-- La prédiction (Départ / Reste).
-- La probabilité associée.
+Ce projet expose une API de Machine Learning capable de prédire le risque de départ d'un employé (**Attrition**) pour l'entreprise **Technova**. Il s'inscrit dans le cadre du Projet 5 de la formation AI Engineer.
 
-## Architecture
+L'objectif est de fournir un outil d'aide à la décision pour les équipes RH, permettant d'identifier les profils à risque afin de proposer des actions de rétention. L'application stocke également chaque prédiction dans une base de données **PostgreSQL** pour un suivi (monitoring) futur.
 
-- **API :** FastAPI
-- **ML Engine :** Scikit-learn, XGBoost
-- **Data :** Pandas
-- **Gestion de version :** Git & GitHub
+🔗 **URL de l'API en production :** [https://huggingface.co/spaces/Fatih09/technova-api](https://huggingface.co/spaces/Fatih09/technova-api)  
+📄 **Documentation interactive (Swagger UI) :** [https://huggingface.co/spaces/Fatih09/technova-api/docs](https://huggingface.co/spaces/Fatih09/technova-api/docs)
+👉 **[Voir la fiche technique du modèle (Model Card)](MODEL_CARD.md)** pour les détails sur la performance et les biais.
 
-## Structure du projet
-- `app/` : Code source de l'API (FastAPI).
-- `data/` : Modèles entraînés (.joblib).
-- `tests/` : Tests unitaires.
-- `.github/` : Pipelines CI/CD.
+---
 
-## Installation et Démarrage
+## Architecture et Choix Techniques
+
+* **API :** FastAPI (Python)
+* **ML Engine :** Pipeline Scikit-learn (Préprocessing + XGBoost optimisé pour le Rappel)
+* **Database :** PostgreSQL (Hébergé sur Supabase)
+* **DevOps :** Docker & GitHub Actions (CI/CD)
+* **Hébergement :** Hugging Face Spaces
+
+### Structure du projet
+* `app/` : Code source de l'API (`main.py`) et logique métier.
+* `data/` : Contient le pipeline complet entraîné (`model.joblib`) incluant le préprocesseur et le modèle.
+* `tests/` : Tests unitaires et fonctionnels (Pytest).
+* `Dockerfile` : Configuration pour la conteneurisation.
+* `requirements.txt` : Liste des dépendances Python.
+
+---
+
+## Installation et Démarrage Local
 
 ### Prérequis
-- Python 3.11+
-- Pip
-- Git
+* **Python 3.11+**
+* Git
+* Une URL de base de données PostgreSQL (ex: Supabase)
 
 ### 1. Cloner le projet
 ```bash
-git clone https://github.com/FatiQpi/Projet_5_Deploy_ML.git
-cd projet_5_deploy_ml
+git clone [https://github.com/FatiQpi/Projet_5_Deploy_ML.git](https://github.com/FatiQpi/Projet_5_Deploy_ML.git)
+cd Projet_5_Deploy_ML
 ```
-### 2. Crée l'environnement virtuel
-```bash
+
+### 2. Créer l'environnement virtuel
+
+```Bash
 python3 -m venv .venv
-.venv/bin/activate  # Sur Mac/Linux
-.venv\Scripts\activate   # Sur Windows
+source .venv/bin/activate  # Sur Mac/Linux
+# .venv\Scripts\activate   # Sur Windows
 ```
+
 ### 3. Installer les dépendances
-```bash
+
+```Bash
 pip install -r requirements.txt
 ```
-### 4. Lancer L'API
-```bash
-uvicorn app.main:app --reload
+
+### 4. Configuration (.env) ⚠️ Important
+
+Créez un fichier .env à la racine du projet pour connecter la base de données. Note : Utilisez le port 6543 (Mode Transaction Pooler) pour la compatibilité cloud.
+
+```Plaintext
+DATABASE_URL="postgresql://postgres.xvcehnhrcdoxlzeliwap:[YOUR-PASSWORD]@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"
 ```
+
+### 5. Initialiser la Base de Données
+
+```Bash
+python create_db.py
+```
+
+# 6. Lancer l'API
+
+```Bash
+uvicorn app.main:app --reload
+L'API sera accessible sur http://127.0.0.1:8000. La documentation interactive est disponible sur http://127.0.0.1:8000/docs.
+```
+
+## Exemple d'utilisation 
+
+L'API attend les données au format JSON spécifique à Technova.
+Requête type(cURL):
+
+```Bash
+curl -X 'POST' \
+  'https://fatih09-technova-api.hf.space/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "age": 41,
+  "revenu_mensuel": 5993,
+  "nombre_experiences_precedentes": 8,
+  "annees_dans_l_entreprise": 6,
+  "satisfaction_employee_environnement": 2,
+  "note_evaluation_precedente": 3,
+  "satisfaction_employee_nature_travail": 4,
+  "satisfaction_employee_equipe": 4,
+  "satisfaction_employee_equilibre_pro_perso": 1,
+  "note_evaluation_actuelle": 3,
+  "nombre_participation_pee": 1,
+  "nb_formations_suivies": 0,
+  "distance_domicile_travail": 1,
+  "annees_depuis_la_derniere_promotion": 0,
+  "niveau_education": 2,
+  "Ratio_Fidelite": 0.15,
+  "Ratio_Stagnation": 0,
+  "genre": "Femme",
+  "statut_marital": "Célibataire",
+  "departement": "Ventes",
+  "poste": "Cadre commercial",
+  "heure_supplementaires": "Oui",
+  "domaine_etude": "Sciences de la vie",
+  "ayant_enfants": "Oui",
+  "frequence_deplacement": "Rarement"
+}'
+```
+
+Réponse attendue:
+
+```JSON
+{
+  "prediction": "Reste",
+  "probability_depart": 0.3782,
+  "alert": false,
+  "log_id": 4
+}
+```
+
+## Tests et Qualité du Code
+Le projet dispose d'une suite de tests automatisés couvrant l'API et l'accès aux données.
+
+```Bash
+# Lancer les tests
+python -m pytest
+
+# Vérifier la couverture (Doit être > 80%)
+python -m pytest --cov=app tests/
+```
+
+## Maintenance et Monitoring
+Un protocole de maintenance est établi pour garantir la fiabilité du modèle dans le temps :
+
+* **Monitoring des Logs :** Vérifier périodiquement dans PostgreSQL la distribution des prédictions (via requêtes SQL) pour détecter une éventuelle dérive.
+
+```SQL
+SELECT prediction, COUNT(*) as nombre_employes FROM prediction_logs GROUP BY prediction;
+```
+
+* **Réentraînement :** Si la performance baisse ou si de nouvelles données sont disponibles, le modèle est réentraîné localement via le notebook Classifiez automatiquement des informations-P4.ipynb. Le nouveau fichier pipeline model.joblib est ensuite déployé.
+* **Mise à jour API :** Toute modification du code sur la branche main et develop entraîne une exécution automatique des tests et un redéploiement via le pipeline CI/CD.
+
+# Auteur
+FB - Étudiant AI Engineer
