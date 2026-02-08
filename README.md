@@ -87,14 +87,14 @@ DATABASE_URL="postgresql://postgres.xvcehnhrcdoxlzeliwap:[YOUR-PASSWORD]@aws-1-e
 python create_db.py
 ```
 
-# 6. Lancer l'API
+### 6. Lancer l'API
 
 ```Bash
 uvicorn app.main:app --reload
 L'API sera accessible sur http://127.0.0.1:8000. La documentation interactive est disponible sur http://127.0.0.1:8000/docs.
 ```
 
-## Exemple d'utilisation 
+#### Exemple d'utilisation 
 
 L'API attend les données au format JSON spécifique à Technova.
 Requête type(cURL):
@@ -167,5 +167,5 @@ SELECT prediction, COUNT(*) as nombre_employes FROM prediction_logs GROUP BY pre
 * **Réentraînement :** Si la performance baisse ou si de nouvelles données sont disponibles, le modèle est réentraîné localement via le notebook Classifiez automatiquement des informations-P4.ipynb. Le nouveau fichier pipeline model.joblib est ensuite déployé.
 * **Mise à jour API :** Toute modification du code sur la branche main et develop entraîne une exécution automatique des tests et un redéploiement via le pipeline CI/CD.
 
-# Auteur
-FB - Étudiant AI Engineer
+#### Auteur
+Fatih B. - Étudiant AI Engineer

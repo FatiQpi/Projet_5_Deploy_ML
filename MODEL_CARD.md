@@ -1,8 +1,4 @@
-
-
-### Fichier `MODEL_CARD.md`
-
-# Model Card : Prédiction d'Attrition Technova
+### Model Card : Prédiction d'Attrition Technova
 
 ## Détails du Modèle
 * **Nom :** Technova XGBoost Recall-Optimized
