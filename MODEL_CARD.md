@@ -1,9 +1,7 @@
----
+
 
 ### Fichier `MODEL_CARD.md`
 
-
-```markdown
 # Model Card : Prédiction d'Attrition Technova
 
 ## Détails du Modèle
@@ -48,4 +46,3 @@ L'analyse d'interprétabilité (SHAP) montre que les décisions du modèle repos
 
 ## Maintenance
 Le modèle doit être surveillé via la table `prediction_logs` pour vérifier la stabilité des prédictions. Un réentraînement annuel est recommandé pour intégrer les évolutions salariales et structurelles de l'entreprise.
-```
