@@ -139,3 +139,18 @@ def predict(employee: EmployeeData, db: Session = Depends(get_db)):
         # En cas d'erreur, on log l'erreur dans la console serveur
         print(f"Erreur lors de la prédiction : {e}")
         raise HTTPException(status_code=400, detail=f"Erreur de traitement : {str(e)}")
+    
+@app.get("/logs/{log_id}")
+def get_log(log_id: int, db: Session = Depends(get_db)):
+    """
+    Récupère un historique de prédiction par son ID.
+    Permet de vérifier les données d'entrée et le résultat stocké (Audit).
+    """
+    # Recherche dans la base de données
+    log = db.query(PredictionLogs).filter(PredictionLogs.id == log_id).first()
+    
+    # Si l'ID n'existe pas, on renvoie une erreur 404
+    if log is None:
+        raise HTTPException(status_code=404, detail="Log introuvable (ID inconnu)")
+    
+    return log
