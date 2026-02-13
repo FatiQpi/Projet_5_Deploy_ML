@@ -144,7 +144,7 @@ def predict(employee: EmployeeData, db: Session = Depends(get_db)):
 def get_log(log_id: int, db: Session = Depends(get_db)):
     """
     Récupère un historique de prédiction par son ID.
-    Permet de vérifier les données d'entrée et le résultat stocké (Audit).
+    Permet de vérifier les données d'entrée et le résultat stocké.
     """
     # Recherche dans la base de données
     log = db.query(PredictionLogs).filter(PredictionLogs.id == log_id).first()
