@@ -190,11 +190,23 @@ def predict_existing_employee(emp_id: int, db: Session = Depends(get_db)):
         prob_depart = float(probas[0][1])
         is_alert = bool(prob_depart > 0.5)
 
+      # ---  SAUVEGARDE DANS LES LOGS ---
+        log_entry = PredictionLogs(
+            input_data=input_data,  
+            prediction=result_text,
+            probability=prob_depart,
+            alert=is_alert
+        )
+        db.add(log_entry)
+        db.commit()
+        db.refresh(log_entry)
+
         return {
             "id_employe": emp_id,
             "prediction": result_text,
             "probability_depart": round(prob_depart, 4),
-            "alert": is_alert
+            "alert": is_alert,
+            "log_id": log_entry.id # On renvoie aussi l'ID du log pour vérifier
         }
     except Exception as e:
         print(f"Erreur sur l'employé existant {emp_id} : {e}")
