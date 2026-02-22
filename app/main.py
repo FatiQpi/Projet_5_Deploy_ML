@@ -28,6 +28,14 @@ class PredictionLogs(Base):
     probability = Column(Float)
     alert = Column(Boolean)
 
+# Définition de la table historique des données d'employés
+class HistoricalData(Base):
+    __tablename__ = "historical_data"
+    id = Column(Integer, primary_key=True, index=True)
+    employee_profile = Column(JSON, nullable=False)
+    target_attrition = Column(Integer, nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
 # Fonction utilitaire pour gérer la session DB 
 def get_db():
     db = SessionLocal()
@@ -154,3 +162,40 @@ def get_log(log_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Log introuvable (ID inconnu)")
     
     return log
+
+@app.get("/predict/employee/{emp_id}")
+def predict_existing_employee(emp_id: int, db: Session = Depends(get_db)):
+    """
+    Récupère un employé de la base historique et génère une prédiction.
+    """
+    if not model:
+        raise HTTPException(status_code=500, detail="Modèle non chargé")
+
+    # chercher l'employé dans la base de données historique
+    employe = db.query(HistoricalData).filter(HistoricalData.id == emp_id).first()
+    
+    if not employe:
+        raise HTTPException(status_code=404, detail=f"Employé {emp_id} introuvable.")
+
+    try:
+        # Récupérer le profil et le mettre dans un DataFrame
+        input_data = employe.employee_profile
+        df = pd.DataFrame([input_data])
+        
+        # Prédiction
+        prediction = model.predict(df)
+        probas = model.predict_proba(df)
+        
+        result_text = "Départ" if prediction[0] == 1 else "Reste"
+        prob_depart = float(probas[0][1])
+        is_alert = bool(prob_depart > 0.5)
+
+        return {
+            "id_employe": emp_id,
+            "prediction": result_text,
+            "probability_depart": round(prob_depart, 4),
+            "alert": is_alert
+        }
+    except Exception as e:
+        print(f"Erreur sur l'employé existant {emp_id} : {e}")
+        raise HTTPException(status_code=400, detail=f"Erreur de traitement : {str(e)}")

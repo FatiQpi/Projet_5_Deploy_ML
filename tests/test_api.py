@@ -5,7 +5,7 @@ from app.main import app
 # Client de test 
 client = TestClient(app)
 
-# --- TEST UNITAIRE ---
+# --- TEST FONCTIONNEL ---
 def test_read_root():
     """Vérifie juste que l'API fonctionne"""
     response = client.get("/")
@@ -14,7 +14,7 @@ def test_read_root():
 
 # --- TEST FONCTIONNEL POST  ---
 def test_predict_valid_employee():
-    """Vérifie le cycle complet : Données -> Prédiction -> Réponse"""
+    """Vérifie le cycle POST : Données -> Prédiction -> Réponse"""
     payload = {
         "age": 30,
         "revenu_mensuel": 4000.0,
@@ -52,22 +52,67 @@ def test_predict_valid_employee():
     # On vérifie que l'alerte est un booléen
     assert isinstance(response.json()["alert"], bool)
 
-# --- TEST ROBUSTESSE (Cas d'erreur 1 : Donnée manquante) ---
+# --- TEST UNITAIRE (Cas d'erreur 1 : Donnée manquante) ---
 def test_predict_missing_field():
     """Si on oublie l'âge, l'API doit refuser proprement"""
     payload = {
-        "revenu_mensuel": 4000.0
+        "revenu_mensuel": 4000.0,
+        "nombre_experiences_precedentes": 2,
+        "annees_dans_l_entreprise": 5,
+        "satisfaction_employee_environnement": 3,
+        "note_evaluation_precedente": 3,
+        "satisfaction_employee_nature_travail": 4,
+        "satisfaction_employee_equipe": 3,
+        "satisfaction_employee_equilibre_pro_perso": 3,
+        "note_evaluation_actuelle": 3,
+        "nombre_participation_pee": 1,
+        "nb_formations_suivies": 2,
+        "distance_domicile_travail": 10.0,
+        "annees_depuis_la_derniere_promotion": 1,
+        "niveau_education": 3,
+        "Ratio_Fidelite": 0.1,
+        "Ratio_Stagnation": 0.2,
+        "genre": "Femme",
+        "statut_marital": "Célibataire",
+        "departement": "R&D",
+        "poste": "Scientifique",
+        "heure_supplementaires": "Non",
+        "domaine_etude": "Sciences",
+        "ayant_enfants": "Non",
+        "frequence_deplacement": "Rarement"
     }
     response = client.post("/predict", json=payload)
-    # 422 = Erreur de validation Pydantic
-    assert response.status_code == 422 
+    assert response.status_code == 422 # erreur de validation pydantic
 
-# --- TEST ROBUSTESSE (Cas d'erreur 2 : Mauvais type) ---
+# --- TEST UNITAIRE (Cas d'erreur 2 : Mauvais type) ---
 def test_predict_invalid_type():
     """Si on envoie du texte au lieu d'un nombre, l'API doit refuser"""
     payload = {
-        "age": "Trente ans", 
-        "revenu_mensuel": 4000.0
+        "age": "Trente ans",  # Mauvais type : string au lieu d'int
+        "revenu_mensuel": 4000.0,
+        "nombre_experiences_precedentes": 2,
+        "annees_dans_l_entreprise": 5,
+        "satisfaction_employee_environnement": 3,
+        "note_evaluation_precedente": 3,
+        "satisfaction_employee_nature_travail": 4,
+        "satisfaction_employee_equipe": 3,
+        "satisfaction_employee_equilibre_pro_perso": 3,
+        "note_evaluation_actuelle": 3,
+        "nombre_participation_pee": 1,
+        "nb_formations_suivies": 2,
+        "distance_domicile_travail": 10.0,
+        "annees_depuis_la_derniere_promotion": 1,
+        "niveau_education": 3,
+        "Ratio_Fidelite": 0.1,
+        "Ratio_Stagnation": 0.2,
+        "genre": "Femme",
+        "statut_marital": "Célibataire",
+        "departement": "R&D",
+        "poste": "Scientifique",
+        "heure_supplementaires": "Non",
+        "domaine_etude": "Sciences",
+        "ayant_enfants": "Non",
+        "frequence_deplacement": "Rarement"
     }
     response = client.post("/predict", json=payload)
     assert response.status_code == 422
@@ -125,3 +170,29 @@ def test_get_log_scenario():
     log_data = response_get.json()
     assert log_data["id"] == log_id
     assert log_data["prediction"] in ["Départ", "Reste"]
+
+# --- TEST FONCTIONNEL GET (Employé existant introuvable) ---
+def test_predict_existing_employee_not_found():
+    """Vérifie que l'API renvoie 404 si on demande la prédiction d'un ID qui n'existe pas"""
+    fake_id = 9999999
+    response = client.get(f"/predict/employee/{fake_id}")
+    
+    assert response.status_code == 404
+    assert "introuvable" in response.json()["detail"]
+
+# --- TEST FONCTIONNEL GET (Employé existant - Succès) ---
+def test_predict_existing_employee_success():
+    """Vérifie que l'API renvoie bien une prédiction pour un ID valide"""
+    # On utilise l'ID 1 qui existe dans ta table historical_data
+    real_id = 1
+    response = client.get(f"/predict/employee/{real_id}")
+    
+    # On vérifie que la requête a réussi (200 OK)
+    assert response.status_code == 200
+    
+    data = response.json()
+    # On vérifie que la réponse contient bien les bonnes informations
+    assert data["id_employe"] == real_id
+    assert "prediction" in data
+    assert data["prediction"] in ["Départ", "Reste"]
+    assert "probability_depart" in data

@@ -11,7 +11,7 @@ jobs:
   test-app:
     runs-on: ubuntu-latest
     steps:
-      # Récupération du code + VRAI FICHIER MODÈLE (LFS indispensable pour les tests)
+      # Récupération du code + LFS 
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -34,4 +34,4 @@ jobs:
       # Lancement des tests
       # 
       - name: Run Tests
-        run: pytest || true
+        run: pytest 

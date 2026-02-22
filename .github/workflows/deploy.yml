@@ -19,7 +19,7 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: "Fatih09"
-          SPACE_NAME: "technova-api" # Ton nouveau Space
+          SPACE_NAME: "technova-api" 
         run: |
           echo "🚀 Démarrage du déploiement..."
           rm -rf .git

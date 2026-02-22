@@ -24,7 +24,7 @@ Ce projet expose une API de Machine Learning capable de prédire le risque de d�
 L'objectif est de fournir un outil d'aide à la décision pour les équipes RH, permettant d'identifier les profils à risque afin de proposer des actions de rétention. L'application stocke également chaque prédiction dans une base de données **PostgreSQL** pour un suivi (monitoring) futur.
 
 🔗 **URL de l'API en production :** [https://huggingface.co/spaces/Fatih09/technova-api](https://huggingface.co/spaces/Fatih09/technova-api)  
-📄 **Documentation interactive (Swagger UI) :** [https://huggingface.co/spaces/Fatih09/technova-api/docs](https://huggingface.co/spaces/Fatih09/technova-api/docs)
+📄 **Documentation interactive (Swagger UI) :** [https://fatih09-technova-api.hf.space/docs](https://fatih09-technova-api.hf.space/docs)
 👉 **[Voir la fiche technique du modèle (Model Card)](MODEL_CARD.md)** pour les détails sur la performance et les biais.
 
 ---
@@ -80,6 +80,9 @@ Créez un fichier .env à la racine du projet pour connecter la base de données
 ```Plaintext
 DATABASE_URL="postgresql://postgres.xvcehnhrcdoxlzeliwap:[YOUR-PASSWORD]@aws-1-eu-west-1.pooler.supabase.com:6543/postgres"
 ```
+Remplacez [YOUR-PASSWORD] par le mot de passe que vous avez défini lors de la création de votre cluster de base de données (ex: Supabase).
+
+Note: si vous utilisez Supabase, le mot de passe est celui saisi lors de la création du projet. Si vous l'avez oublié, vous pouvez le réinitialiser dans les paramètre de la base de données.
 
 ### 5. Initialiser la Base de Données
 
@@ -89,10 +92,18 @@ python create_db.py
 
 ### 6. Lancer l'API
 
+**En Local**
 ```Bash
 uvicorn app.main:app --reload
-L'API sera accessible sur http://127.0.0.1:8000. La documentation interactive est disponible sur http://127.0.0.1:8000/docs.
 ```
+L'API sera accessible sur http://127.0.0.1:8000. 
+La documentation interactive est disponible sur http://127.0.0.1:8000/docs.
+
+**En Production (Hugging Face)**
+
+L'espace du projet sera accessible sur https://huggingface.co/spaces/Fatih09/technova-api
+La documentation interactive (Swagger): https://fatih09-technova-api.hf.space/docs
+
 
 #### Exemple d'utilisation 
 
