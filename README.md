@@ -84,10 +84,21 @@ Remplacez [YOUR-PASSWORD] par le mot de passe que vous avez défini lors de la c
 
 Note: si vous utilisez Supabase, le mot de passe est celui saisi lors de la création du projet. Si vous l'avez oublié, vous pouvez le réinitialiser dans les paramètre de la base de données.
 
-### 5. Initialiser la Base de Données
+### 5.1 Initialiser la Base de Données
+
+Générez l'architecture des tables (logs et historique) en exécutant le script de création:
 
 ```Bash
 python create_db.py
+```
+
+### 5.2 Injecter la base de données Technova
+
+Afin d'initialiser la base avec l'historique de l'entreprise et de pouvoir lancer des prédictions sur les collaborateurs actuels,
+injectez les données des employés de Technova:
+
+```bash
+python inject_data.py
 ```
 
 ### 6. Lancer l'API
